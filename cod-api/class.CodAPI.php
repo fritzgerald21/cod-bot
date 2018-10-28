@@ -8,8 +8,9 @@ class CodAPI
 		'leaderboard' => 'https://callofdutytracker.com/api/leaderboard/%s/%s/%s?rows=%s',
 	];
 
-	public function validateUser($username = '', $game = '', $platform = '')
+	public function validateUser($username = '', $game = 'bo4', $platform = 'xbl')
 	{
+		
 		$data = $this->get('validate', $username, $game, $platform);
 
 		if(isset($data->username) && strtolower($data->username) == strtolower($username)) 
@@ -22,8 +23,9 @@ class CodAPI
 		}
 	}
 
-	public function getStats($username = '', $game = '', $platform = '')
+	public function getStats($username = '', $game = 'bo4', $platform = 'xbl')
 	{
+		
 		$data = $this->get('userstats', $username, $game, $platform);
 
 		if(isset($data->status) && $data->status == 'error') 
@@ -36,7 +38,7 @@ class CodAPI
 		}
 	}
 
-	public function getLeaderboard($game = '', $platform = '', $scope = '', $rows = 100)
+	public function getLeaderboard($game = 'bo4', $platform = 'xbl', $scope = '', $rows = 100)
 	{
 		$data = $this->get('leaderboard', $game, $platform, $scope, $rows);
 
@@ -50,24 +52,23 @@ class CodAPI
 		}
 	}
 
-	private function get($endpoint, $fields, $username = '', $game = '', $platform = '', $extra = '')
+	//private function get($endpoint, $fields, $username = '', $game = 'bo4', $platform = 'xbl', $extra = '')
+	private function get($endpoint, $username = '', $game = 'bo4', $platform = 'xbl', $extra = '')
 	{
 		$ch = curl_init();
-
 		curl_setopt($ch, CURLOPT_URL, sprintf($this->endpoints[$endpoint], $game, $username, $platform, $extra));
 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-			'Content-Length: ' . strlen($fields),
-		));
+		// curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		// 	'Content-Length: ' . strlen($fields),
+		// ));
 
 		$output = curl_exec($ch);
 
 		curl_close($ch);
-
-		return $output;
+		return json_decode($output, true);
 	}
 }
 
