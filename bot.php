@@ -1,18 +1,28 @@
 <?php
-include 'cod-api/consumer.php';
+
+include 'cod-api/class.CodAPI.php';
+include 'config.php';
+include 'cod-api/players.php';
+
+
+$call= new CodAPI;
+$stats= $call->getStats($players[0], 'bo4', 'xbl');
+
+
+$messages['weekly_stats']= $stats['user']['username'].' kills: '. $stats['stats']['kills'];
 
 // Data in JSON format
 $data = array(
-	# TODO: Remove bot_id
-    'bot_id' => '',
+    'bot_id' => $config['bot_id'],
     'text' => $messages['weekly_stats']
 );
  
 
 $payload = json_encode($data);
-
+var_dump('PAYLOAD:');
+var_dump($payload);
 $curl = curl_init();
-
+curl_setopt($curl, CURLOPT_VERBOSE, true);
 curl_setopt_array($curl, array(
   CURLOPT_URL => "https://api.groupme.com/v3/bots/post",
   CURLOPT_RETURNTRANSFER => true,
