@@ -6,10 +6,11 @@ include 'cod-api/players.php';
 
 
 $call= new CodAPI;
-$stats= $call->getStats($players[0], 'bo4', 'xbl');
 
-
-$messages['weekly_stats']= $stats['user']['username'].' kills: '. $stats['stats']['kills'];
+foreach($players as $player){
+	$stats= $call->getStats($player, 'bo4', 'xbl');
+	$messages['weekly_stats'].= $stats['user']['username'].' kills: '. $stats['stats']['kills'].PHP_EOL;
+}
 
 // Data in JSON format
 $data = array(
